@@ -20,6 +20,9 @@
 
     <extension qualifier="webdriver">
         <property name="browser">${browser}</property>
+        <property name="remote">true</property>
+        <property name="githubUsername">spriadka</property>
+        <property name="githubToken">d9682786737f27cb9f45f91503ef2ed92c9fdb84</property>
     </extension>
 
     <extension qualifier="graphene">
