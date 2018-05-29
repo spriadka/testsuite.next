@@ -71,7 +71,7 @@
         <test.included.category/>
 
         <!-- dependency versions -->
-        <arquillian.version>1.1.15.Final</arquillian.version>
+        <arquillian.universe.version>1.2.0.1</arquillian.universe.version>
         <arquillian.drone.version>2.5.0</arquillian.drone.version>
         <arquillian.wildfly.version>2.1.0.Final</arquillian.wildfly.version>
         <commons.io.version>2.6</commons.io.version>
@@ -106,9 +106,9 @@
 
             <!-- Arquillian & Co -->
             <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>${arquillian.version}</version>
+                <groupId>org.arquillian</groupId>
+                <artifactId>arquillian-universe</artifactId>
+                <version>${arquillian.universe.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -120,22 +120,18 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.jboss.arquillian.extension</groupId>
-                <artifactId>arquillian-drone-bom</artifactId>
-                <version>${arquillian.drone.version}</version>
+                <groupId>org.jboss.hal</groupId>
+                <artifactId>hal-bom</artifactId>
+                <version>${hal.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.jboss.arquillian.graphene</groupId>
-                <artifactId>graphene-webdriver</artifactId>
-                <version>${graphene.version}</version>
+                <groupId>org.wildfly.bom</groupId>
+                <artifactId>wildfly-javaee7</artifactId>
+                <scope>import</scope>
                 <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.arquillian.graphene</groupId>
-                <artifactId>arquillian-browser-screenshooter</artifactId>
-                <version>${graphene.version}</version>
+                <version>${wildfly.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wildfly.arquillian</groupId>
@@ -160,13 +156,6 @@
                 <version>${wildfly.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly.bom</groupId>
-                <artifactId>wildfly-javaee7</artifactId>
-                <scope>import</scope>
-                <type>pom</type>
-                <version>${wildfly.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.wildfly.extras.creaper</groupId>
                 <artifactId>creaper-core</artifactId>
                 <version>${creaper.version}</version>
@@ -185,13 +174,6 @@
                 <groupId>org.jboss</groupId>
                 <artifactId>jboss-dmr</artifactId>
                 <version>${jboss.dmr.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jboss.hal</groupId>
-                <artifactId>hal-bom</artifactId>
-                <version>${hal.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>com.gwtplatform</groupId>
@@ -239,7 +221,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
