@@ -43,7 +43,7 @@
         </dependency>
         <dependency>
             <groupId>org.arquillian.universe</groupId>
-            <artifactId>arquillian-junit</artifactId>
+            <artifactId>arquillian-junit-standalone</artifactId>
             <scope>test</scope>
             <type>pom</type>
         </dependency>

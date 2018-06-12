@@ -71,7 +71,7 @@
         <test.included.category/>
 
         <!-- dependency versions -->
-        <arquillian.universe.version>1.2.0.1</arquillian.universe.version>
+        <arquillian.universe.version>1.2.0.2-SNAPSHOT</arquillian.universe.version>
         <arquillian.drone.version>2.5.0</arquillian.drone.version>
         <arquillian.wildfly.version>2.1.0.Final</arquillian.wildfly.version>
         <commons.io.version>2.6</commons.io.version>

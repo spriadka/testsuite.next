@@ -3,22 +3,17 @@
     xsi:schemaLocation="http://jboss.org/schema/arquillian
   http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-  <extension qualifier="cube">
-    <property name="connectionMode">STARTORCONNECTANDLEAVE</property>
-  </extension>
-
   <extension qualifier="docker">
-    <property name="definitionFormat">CUBE</property>
-    <property name="dockerContainers">
-      wildfly:
-        buildImage:
-          dockerfileLocation: src/test/resources/cube
-          remove: true
-          noCache: true
+    <property name="dockerContainersFile">src/test/resources/docker-compose.yml</property>
+    <property name="cubeSpecificProperties">
+      wildfly-rbac-standalone:
         await:
-          strategy: sleeping
-          sleepTime: 30 s
-        portBindings: [8080->8080/tcp,9990->9990/tcp]
+          strategy: log
+          match: 'Admin console listening'
+      wildfly-rbac-domain-master:
+        await:
+          strategy: log
+          match: 'Admin console listening'
     </property>
   </extension>
 
@@ -26,8 +21,18 @@
     <property name="browser">${browser}</property>
   </extension>
 
+  <container qualifier="jboss" default="true">
+    <configuration>
+      <property name="managementAddress">${server.ip}</property>
+      <property name="managementPort">9990</property>
+      <property name="username">admin</property>
+      <property name="password">admin</property>
+    </configuration>
+  </container>
+
+
   <extension qualifier="graphene">
-    <property name="url">${suite.url}</property>
+    <property name="url">http://${server.ip}:9990/console/ts.html</property>
   </extension>
 
 </arquillian>

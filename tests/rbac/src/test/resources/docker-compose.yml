@@ -1,0 +1,26 @@
+version: '2'
+services:
+#  wildfly-rbac-standalone:
+#    build: src/test/resources/cube/standalone
+#    ports:
+#      - "9990:9990"
+#      - "8080:8080"
+  wildfly-rbac-domain-master:
+    build:
+      context: src/test/resources/cube/domain
+      args:
+        controller: domain
+    networks:
+      domain_network:
+        ipv4_address: 172.32.2.1
+    command: ["--host-config","host-master.xml",
+              "-b","172.32.2.1",
+              "-bmanagement", "172.32.2.1"]
+networks:
+  domain_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.32.0.0/16
+          ip-range: 172.32.2.0/24
+          gateway: 172.32.2.254

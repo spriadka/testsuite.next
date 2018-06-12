@@ -22,6 +22,7 @@ import java.util.List;
 import org.jboss.arquillian.core.api.annotation.Inject;
 import org.jboss.arquillian.graphene.enricher.AbstractSearchContextEnricher;
 import org.jboss.arquillian.graphene.enricher.ReflectionHelper;
+import org.jboss.hal.testsuite.Authentication;
 import org.jboss.hal.testsuite.Console;
 import org.jboss.hal.testsuite.CrudOperations;
 import org.openqa.selenium.SearchContext;
@@ -42,6 +43,11 @@ public class ConsoleEnricher extends AbstractSearchContextEnricher {
                 CrudOperations crud = new CrudOperations();
                 enrichRecursively(searchContext, crud);
                 setValue(field, target, crud);
+            }
+            if (field.getType().isAssignableFrom(Authentication.class)) {
+                Authentication authentication = new Authentication();
+                enrichRecursively(searchContext, authentication);
+                setValue(field, target, authentication);
             }
         }
     }
