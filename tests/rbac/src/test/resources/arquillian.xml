@@ -4,7 +4,7 @@
   http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
   <extension qualifier="docker">
-    <property name="dockerContainersFile">src/test/resources/docker-compose.yml</property>
+    <property name="dockerContainersFile">docker-compose.yml</property>
     <property name="cubeSpecificProperties">
       wildfly-rbac-standalone:
         await:
@@ -21,18 +21,9 @@
     <property name="browser">${browser}</property>
   </extension>
 
-  <container qualifier="jboss" default="true">
-    <configuration>
-      <property name="managementAddress">${server.ip}</property>
-      <property name="managementPort">9990</property>
-      <property name="username">admin</property>
-      <property name="password">admin</property>
-    </configuration>
-  </container>
-
 
   <extension qualifier="graphene">
-    <property name="url">http://${server.ip}:9990/console/ts.html</property>
+    <property name="url">${suite.url}</property>
   </extension>
 
 </arquillian>

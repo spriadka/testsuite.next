@@ -10,6 +10,8 @@ services:
       context: src/test/resources/cube/domain
       args:
         controller: domain
+    ports:
+      - "127.0.0.1:9990:9990"
     networks:
       domain_network:
         ipv4_address: 172.32.2.1

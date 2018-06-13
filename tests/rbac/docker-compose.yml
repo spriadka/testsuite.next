@@ -1,0 +1,20 @@
+version: '2'
+services:
+  wildfly-rbac-standalone:
+    build: src/test/resources/cube/standalone
+    ports:
+      - "127.0.0.1:9990:9990"
+    networks:
+      standalone_network:
+        ipv4_address: 172.42.2.1
+    command: ["/opt/jboss/wildfly/bin/standalone.sh","-c","standalone-full-ha.xml",
+              "-b","172.42.2.1",
+              "-bmanagement","172.42.2.1"]
+networks:
+  standalone_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.42.0.0/16
+          ip-range: 172.42.2.0/24
+          gateway: 172.42.2.254

@@ -1,10 +1,8 @@
 package org.jboss.hal.testsuite;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,17 +15,17 @@ public class Authentication {
 
     private WebDriver browser;
 
-    @ArquillianResource
-    private URL url;
+    public static Authentication with(WebDriver browser) {
+        return new Authentication(browser);
+    }
 
-    public Authentication with(WebDriver browser) {
+    private Authentication(WebDriver browser) {
         this.browser = browser;
         if (loginMap.containsKey(browser)) {
             authenticated = loginMap.get(browser);
         } else {
             loginMap.put(browser, authenticated);
         }
-        return this;
     }
 
     public void authenticate(String username, String password) {
@@ -39,7 +37,7 @@ public class Authentication {
         log.debug("# username: " + username);
         log.debug("# password: " + password);
 
-        String authUrl = url.getHost() + ":" + url.getPort() + "/management/";
+        String authUrl = "localhost:9990/management/";
         String protocol = "http";
         browser.get(protocol + "://" + username + ":" + password + "@" + authUrl);
         authenticated = true;
