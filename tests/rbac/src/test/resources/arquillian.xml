@@ -4,7 +4,7 @@
   http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
   <extension qualifier="docker">
-    <property name="dockerContainersFile">docker-compose.yml</property>
+    <property name="dockerContainersFile">${container.definition.path}</property>
     <property name="cubeSpecificProperties">
       wildfly-rbac-standalone:
         await:

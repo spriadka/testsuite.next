@@ -1,4 +1,4 @@
-FROM halconsole/hal-wildfly-nightly
+FROM halconsole/hal-wildfly
 
 ARG controller=host
 

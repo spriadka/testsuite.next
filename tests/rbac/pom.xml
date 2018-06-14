@@ -38,6 +38,21 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>rbac-standalone</id>
+            <properties>
+                <suite.controller.ip>172.42.2.1</suite.controller.ip>
+            </properties>
+        </profile>
+        <profile>
+            <id>rbac-domain</id>
+            <properties>
+                <suite.controller.ip>172.32.2.1</suite.controller.ip>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>

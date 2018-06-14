@@ -4,7 +4,7 @@ function wait_for_server() {
     sleep 1
   done
 }
-
+${JBOSS_HOME}/bin/add-user.sh --silent -e -u admin -p admin
 $JBOSS_HOME/bin/standalone.sh -c standalone-full-ha.xml > /dev/null &
 wait_for_server
 ${JBOSS_HOME}/bin/jboss-cli.sh -c --file=${SETUP_DIR}/rbac-setup-standalone.batch
