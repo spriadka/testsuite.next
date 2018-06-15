@@ -1,10 +1,5 @@
 version: '2'
 services:
-#  wildfly-rbac-standalone:
-#    build: src/test/resources/cube/standalone
-#    ports:
-#      - "9990:9990"
-#      - "8080:8080"
   wildfly-rbac-domain-master:
     build:
       context: src/test/resources/cube/domain
