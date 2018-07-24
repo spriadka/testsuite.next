@@ -17,7 +17,11 @@ package org.jboss.hal.testsuite.test.configuration;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 import org.jboss.arquillian.core.api.annotation.Inject;
@@ -168,5 +172,22 @@ public class SubsystemsTest {
         subsystemsToPinned.forEach(this::unpin);
         Assert.assertEquals("Subsystems should be in previous order after unpinning", initialVisibleSubsystems,
             getVisibleSubsystems());
+    }
+
+    @Test
+    public void verifyIsSorted() {
+        List<String> visibleSubsystems = new ArrayList<>(getVisibleSubsystems());
+        Iterator<String> iterator = visibleSubsystems.iterator();
+        if (!iterator.hasNext()) {
+            return;
+        }
+        String first = iterator.next();
+        while (iterator.hasNext()) {
+            String second = iterator.next();
+            if (first.compareTo(second) > 0) {
+                Assert.fail("Visible subsystems are not sorted alphabetically, comparing:[" + first + "] to: [" + second + "]");
+            }
+            first = second;
+        }
     }
 }
