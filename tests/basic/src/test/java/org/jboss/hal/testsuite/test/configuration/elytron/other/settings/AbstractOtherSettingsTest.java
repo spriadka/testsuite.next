@@ -16,26 +16,15 @@ import org.wildfly.extras.creaper.core.online.operations.Operations;
 import org.wildfly.extras.creaper.core.online.operations.Values;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CLEAR_TEXT;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.CREATE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CREDENTIAL_REFERENCE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT_REALM;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.DIR_CONTEXT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.KEY_MANAGER;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.KEY_STORE;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.LOCATION;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.NAME;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.NEW_ITEM_ATTRIBUTES;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.NEW_ITEM_PATH;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.NEW_ITEM_RDN;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.NEW_ITEM_TEMPLATE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PATH;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PORT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REALM;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REALMS;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.SEARCH_PATH;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.TYPE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.URL;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.VALUE;
 import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures.*;
 
 public class AbstractOtherSettingsTest {
@@ -53,23 +42,6 @@ public class AbstractOtherSettingsTest {
         operations.add(providerLoaderAddress(PROV_LOAD_UPDATE3));
         operations.add(providerLoaderAddress(PROV_LOAD_DELETE));
 
-        // Stores
-        ModelNode credRef = new ModelNode();
-        credRef.get(CLEAR_TEXT).set(ANY_STRING);
-        Values credParams = Values.of(CREATE, true).and(CREDENTIAL_REFERENCE, credRef).and(LOCATION, ANY_STRING);
-        operations.add(credentialStoreAddress(CRED_ST_UPDATE), credParams);
-        operations.add(credentialStoreAddress(CRED_ST_DELETE), credParams);
-
-        Values ksParams = Values.of(TYPE, JKS).and(CREDENTIAL_REFERENCE, credRef);
-        operations.add(keyStoreAddress(KEY_ST_UPDATE), ksParams);
-        operations.add(keyStoreAddress(KEY_ST_CR_UPDATE), ksParams);
-        operations.add(keyStoreAddress(KEY_ST_DELETE), ksParams);
-        operations.writeAttribute(keyStoreAddress(KEY_ST_UPDATE), PROVIDERS, PROV_LOAD_UPDATE);
-
-        operations.add(filteringKeyStoreAddress(FILT_ST_DELETE),
-                Values.of(ALIAS_FILTER, ANY_STRING).and(KEY_STORE, KEY_ST_UPDATE));
-        operations.add(filteringKeyStoreAddress(FILT_ST_UPDATE),
-                Values.of(ALIAS_FILTER, ANY_STRING).and(KEY_STORE, KEY_ST_UPDATE));
 
         operations.add(dirContextAddress(DIR_UPDATE), Values.of(URL, ANY_STRING));
         operations.add(dirContextAddress(DIR_DELETE), Values.of(URL, ANY_STRING));
@@ -79,24 +51,6 @@ public class AbstractOtherSettingsTest {
         operations.add(dirContextAddress(DIR_CR_CRT), Values.of(URL, ANY_STRING));
         operations.add(dirContextAddress(DIR_CR_UPD), dirCtxParams);
         operations.add(dirContextAddress(DIR_CR_DEL), dirCtxParams);
-
-        Values ldapKsValues = Values.of(DIR_CONTEXT, DIR_UPDATE).and(SEARCH_PATH, ANY_STRING);
-        ModelNode props = new ModelNode();
-        props.get(NAME).set("p1");
-        props.get(VALUE).add(Random.name());
-        ModelNode newItemTemplate = new ModelNode();
-        newItemTemplate.get(NEW_ITEM_PATH).set(ANY_STRING);
-        newItemTemplate.get(NEW_ITEM_RDN).set(ANY_STRING);
-        newItemTemplate.get(NEW_ITEM_ATTRIBUTES).add(props);
-
-        operations.add(ldapKeyStoreAddress(LDAPKEY_ST_UPDATE), ldapKsValues);
-        operations.add(ldapKeyStoreAddress(LDAPKEY_ST_DELETE), ldapKsValues);
-        operations.add(ldapKeyStoreAddress(LDAPKEY_ST_TEMP1_UPDATE), ldapKsValues);
-        operations.add(ldapKeyStoreAddress(LDAPKEY_ST_TEMP2_DELETE), ldapKsValues);
-        operations.add(ldapKeyStoreAddress(LDAPKEY_ST_TEMP3_ADD), ldapKsValues);
-        operations.add(ldapKeyStoreAddress(LDAPKEY_ST_TEMP4_TRY_ADD), ldapKsValues);
-        operations.writeAttribute(ldapKeyStoreAddress(LDAPKEY_ST_TEMP1_UPDATE), NEW_ITEM_TEMPLATE, newItemTemplate);
-        operations.writeAttribute(ldapKeyStoreAddress(LDAPKEY_ST_TEMP2_DELETE), NEW_ITEM_TEMPLATE, newItemTemplate);
 
         // SSL
         Values aggValues = Values.ofList(PROVIDERS, PROV_LOAD_UPDATE, PROV_LOAD_UPDATE2);
@@ -183,22 +137,7 @@ public class AbstractOtherSettingsTest {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            // Stores
-            operations.removeIfExists(credentialStoreAddress(CRED_ST_DELETE));
-            operations.removeIfExists(credentialStoreAddress(CRED_ST_UPDATE));
-            operations.removeIfExists(credentialStoreAddress(CRED_ST_CREATE));
-            operations.removeIfExists(filteringKeyStoreAddress(FILT_ST_DELETE));
-            operations.removeIfExists(filteringKeyStoreAddress(FILT_ST_UPDATE));
-            operations.removeIfExists(filteringKeyStoreAddress(FILT_ST_CREATE));
-            operations.removeIfExists(keyStoreAddress(KEY_ST_CREATE));
-            operations.removeIfExists(keyStoreAddress(KEY_ST_DELETE));
-            operations.removeIfExists(ldapKeyStoreAddress(LDAPKEY_ST_DELETE));
-            operations.removeIfExists(ldapKeyStoreAddress(LDAPKEY_ST_UPDATE));
-            operations.removeIfExists(ldapKeyStoreAddress(LDAPKEY_ST_TEMP1_UPDATE));
-            operations.removeIfExists(ldapKeyStoreAddress(LDAPKEY_ST_TEMP2_DELETE));
-            operations.removeIfExists(ldapKeyStoreAddress(LDAPKEY_ST_TEMP3_ADD));
-            operations.removeIfExists(ldapKeyStoreAddress(LDAPKEY_ST_TEMP4_TRY_ADD));
-            operations.removeIfExists(ldapKeyStoreAddress(LDAPKEY_ST_CREATE));
+
             operations.removeIfExists(dirContextAddress(DIR_UPDATE));
             operations.removeIfExists(dirContextAddress(DIR_DELETE));
             operations.removeIfExists(dirContextAddress(DIR_CREATE));
