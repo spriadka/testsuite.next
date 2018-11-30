@@ -17,13 +17,8 @@ import org.wildfly.extras.creaper.core.online.operations.Values;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CLEAR_TEXT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CREDENTIAL_REFERENCE;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.DEFAULT_REALM;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.KEY_MANAGER;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.KEY_STORE;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PATH;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.PORT;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.REALM;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.REALMS;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.URL;
 import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures.*;
 
@@ -37,10 +32,6 @@ public class AbstractOtherSettingsTest {
     public static void beforeTests() throws Exception {
 
         // used in key-store, as trust-manager requires a key-store with providers attribute set
-        operations.add(providerLoaderAddress(PROV_LOAD_UPDATE));
-        operations.add(providerLoaderAddress(PROV_LOAD_UPDATE2));
-        operations.add(providerLoaderAddress(PROV_LOAD_UPDATE3));
-        operations.add(providerLoaderAddress(PROV_LOAD_DELETE));
 
 
         operations.add(dirContextAddress(DIR_UPDATE), Values.of(URL, ANY_STRING));
@@ -53,45 +44,8 @@ public class AbstractOtherSettingsTest {
         operations.add(dirContextAddress(DIR_CR_DEL), dirCtxParams);
 
         // SSL
-        Values aggValues = Values.ofList(PROVIDERS, PROV_LOAD_UPDATE, PROV_LOAD_UPDATE2);
-        operations.add(aggregateProvidersAddress(AGG_PRV_DELETE), aggValues);
-        operations.add(aggregateProvidersAddress(AGG_PRV_UPDATE), aggValues);
-
-        operations.add(clientSslContextAddress(CLI_SSL_DELETE));
-        operations.add(clientSslContextAddress(CLI_SSL_UPDATE));
-
-        Values keyManagerValues = Values.of(KEY_STORE, KEY_ST_UPDATE)
-                .andObject(CREDENTIAL_REFERENCE, Values.of(CLEAR_TEXT, ANY_STRING));
-        operations.add(keyManagerAddress(KEY_MAN_UPDATE), keyManagerValues);
-        operations.add(keyManagerAddress(KEY_MAN_TRY_UPDATE), keyManagerValues);
-        operations.add(keyManagerAddress(KEY_MAN_DELETE), keyManagerValues);
-
-        Values serverSslContextValues = Values.of(KEY_MANAGER, KEY_MAN_UPDATE);
-        operations.add(serverSslContextAddress(SRV_SSL_DELETE), serverSslContextValues);
-        operations.add(serverSslContextAddress(SRV_SSL_UPDATE), serverSslContextValues);
 
         // a realm is required for new security-domain
-        operations.add(filesystemRealmAddress(FILESYS_RLM_CREATE), Values.of(PATH, ANY_STRING));
-        operations.add(filesystemRealmAddress(FILESYS_RLM_UPDATE), Values.of(PATH, ANY_STRING));
-        ModelNode realmNode1 = new ModelNode();
-        realmNode1.get(REALM).set(FILESYS_RLM_UPDATE);
-        ModelNode realmNode2 = new ModelNode();
-        realmNode2.get(REALM).set(FILESYS_RLM_CREATE);
-        Values secDomainParams = Values.of(DEFAULT_REALM, FILESYS_RLM_UPDATE).andList(REALMS, realmNode1);
-        operations.add(securityDomainAddress(SEC_DOM_UPDATE), secDomainParams);
-        operations.add(securityDomainAddress(SEC_DOM_UPDATE2), secDomainParams);
-        operations.add(securityDomainAddress(SEC_DOM_UPDATE3),
-                Values.of(DEFAULT_REALM, FILESYS_RLM_UPDATE).andList(REALMS, realmNode1, realmNode2));
-        operations.add(securityDomainAddress(SEC_DOM_DELETE));
-
-        operations.add(trustManagerAddress(TRU_MAN_UPDATE), Values.of(KEY_STORE, KEY_ST_UPDATE));
-        operations.add(trustManagerAddress(TRU_MAN_DELETE), Values.of(KEY_STORE, KEY_ST_UPDATE));
-
-        Values trustParams = Values.of(KEY_STORE, KEY_ST_UPDATE).andObject(CERTIFICATE_REVOCATION_LIST,
-                        Values.of(PATH, "${jboss.server.config.dir}/logging.properties"));
-        operations.add(trustManagerAddress(TRU_MAN_CRL_CRT), Values.of(KEY_STORE, KEY_ST_UPDATE));
-        operations.add(trustManagerAddress(TRU_MAN_CRL_UPD), trustParams);
-        operations.add(trustManagerAddress(TRU_MAN_CRL_DEL), trustParams);
 
         operations.add(constantPrincipalTransformerAddress(CONS_PRI_TRANS_UPDATE), Values.of(CONSTANT, ANY_STRING));
 
@@ -145,39 +99,10 @@ public class AbstractOtherSettingsTest {
             operations.removeIfExists(dirContextAddress(DIR_CR_UPD));
             operations.removeIfExists(dirContextAddress(DIR_CR_DEL));
             // SSL
-            operations.removeIfExists(aggregateProvidersAddress(AGG_PRV_DELETE));
-            operations.removeIfExists(aggregateProvidersAddress(AGG_PRV_UPDATE));
-            operations.removeIfExists(aggregateProvidersAddress(AGG_PRV_CREATE));
-            operations.removeIfExists(clientSslContextAddress(CLI_SSL_UPDATE));
-            operations.removeIfExists(clientSslContextAddress(CLI_SSL_CREATE));
-            operations.removeIfExists(clientSslContextAddress(CLI_SSL_DELETE));
             // removeIfExists() the server-ssl-context before removing key-manager
-            operations.removeIfExists(serverSslContextAddress(SRV_SSL_UPDATE));
-            operations.removeIfExists(serverSslContextAddress(SRV_SSL_CREATE));
-            operations.removeIfExists(serverSslContextAddress(SRV_SSL_DELETE));
-            operations.removeIfExists(keyManagerAddress(KEY_MAN_CREATE));
-            operations.removeIfExists(keyManagerAddress(KEY_MAN_UPDATE));
-            operations.removeIfExists(keyManagerAddress(KEY_MAN_TRY_UPDATE));
-            operations.removeIfExists(keyManagerAddress(KEY_MAN_DELETE));
-            operations.removeIfExists(securityDomainAddress(SEC_DOM_UPDATE));
-            operations.removeIfExists(securityDomainAddress(SEC_DOM_UPDATE2));
-            operations.removeIfExists(securityDomainAddress(SEC_DOM_UPDATE3));
-            operations.removeIfExists(securityDomainAddress(SEC_DOM_DELETE));
-            operations.removeIfExists(securityDomainAddress(SEC_DOM_CREATE));
-            operations.removeIfExists(trustManagerAddress(TRU_MAN_UPDATE));
-            operations.removeIfExists(trustManagerAddress(TRU_MAN_CREATE));
-            operations.removeIfExists(trustManagerAddress(TRU_MAN_DELETE));
-            operations.removeIfExists(trustManagerAddress(TRU_MAN_CRL_CRT));
-            operations.removeIfExists(trustManagerAddress(TRU_MAN_CRL_UPD));
-            operations.removeIfExists(trustManagerAddress(TRU_MAN_CRL_DEL));
             // key-store is a dependency on key-manager and trust-manager, removeIfExists() it after key-manager and trust-manager
             operations.removeIfExists(keyStoreAddress(KEY_ST_UPDATE));
             operations.removeIfExists(keyStoreAddress(KEY_ST_CR_UPDATE));
-            operations.removeIfExists(providerLoaderAddress(PROV_LOAD_UPDATE));
-            operations.removeIfExists(providerLoaderAddress(PROV_LOAD_UPDATE2));
-            operations.removeIfExists(providerLoaderAddress(PROV_LOAD_UPDATE3));
-            operations.removeIfExists(providerLoaderAddress(PROV_LOAD_CREATE));
-            operations.removeIfExists(providerLoaderAddress(PROV_LOAD_DELETE));
             operations.removeIfExists(filesystemRealmAddress(FILESYS_RLM_UPDATE));
             operations.removeIfExists(filesystemRealmAddress(FILESYS_RLM_CREATE));
             operations.removeIfExists(constantPrincipalTransformerAddress(CONS_PRI_TRANS_UPDATE));
