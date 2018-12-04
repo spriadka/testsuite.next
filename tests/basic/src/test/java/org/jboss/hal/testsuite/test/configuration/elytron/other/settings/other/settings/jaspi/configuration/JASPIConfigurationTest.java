@@ -1,4 +1,4 @@
-package org.jboss.hal.testsuite.test.configuration.elytron.other.settings.jaspi.configuration;
+package org.jboss.hal.testsuite.test.configuration.elytron.other.settings.other.settings.jaspi.configuration;
 
 import java.io.IOException;
 

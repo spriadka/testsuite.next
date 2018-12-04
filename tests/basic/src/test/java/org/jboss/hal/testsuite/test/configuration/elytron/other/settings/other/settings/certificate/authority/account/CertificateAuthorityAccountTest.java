@@ -1,24 +1,36 @@
-package org.jboss.hal.testsuite.test.configuration.elytron.other.settings.certificate.authority.account;
+package org.jboss.hal.testsuite.test.configuration.elytron.other.settings.other.settings.certificate.authority.account;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.jboss.arquillian.core.api.annotation.Inject;
+import org.jboss.arquillian.drone.api.annotation.Drone;
+import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.dmr.ModelNode;
 import org.jboss.hal.dmr.ModelDescriptionConstants;
+import org.jboss.hal.testsuite.Console;
+import org.jboss.hal.testsuite.CrudOperations;
 import org.jboss.hal.testsuite.Random;
+import org.jboss.hal.testsuite.creaper.ManagementClientProvider;
+import org.jboss.hal.testsuite.page.configuration.ElytronOtherSettingsPage;
 import org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures;
-import org.jboss.hal.testsuite.test.configuration.elytron.other.settings.AbstractOtherSettingsTest;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.WebDriver;
+import org.wildfly.extras.creaper.core.online.OnlineManagementClient;
 import org.wildfly.extras.creaper.core.online.operations.OperationException;
+import org.wildfly.extras.creaper.core.online.operations.Operations;
 import org.wildfly.extras.creaper.core.online.operations.Values;
 
 @RunWith(Arquillian.class)
-public class CertificateAuthorityAccountTest extends AbstractOtherSettingsTest {
+public class CertificateAuthorityAccountTest {
+
+    private static final OnlineManagementClient client = ManagementClientProvider.createOnlineManagementClient();
+    private static final Operations operations = new Operations(client);
 
     private static final String KEY_STORE = "key-store-with-path-" + Random.name();
 
@@ -63,8 +75,21 @@ public class CertificateAuthorityAccountTest extends AbstractOtherSettingsTest {
         operations.removeIfExists(ElytronFixtures.keyStoreAddress(KEY_STORE_UPDATE));
     }
 
+    @Drone
+    private WebDriver browser;
+
+    @Page
+    private ElytronOtherSettingsPage page;
+
+    @Inject
+    private Console console;
+
+    @Inject
+    private CrudOperations crud;
+
     @Before
     public void navigateToCertificateAuthorityAccount() {
+        page.navigate();
         console.verticalNavigation()
             .selectSecondary(ElytronFixtures.OTHER_ITEM, ElytronFixtures.CERTIFICATE_AUTHORITY_ACCOUNT_ITEM);
     }
