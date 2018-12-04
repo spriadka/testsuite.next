@@ -5,7 +5,6 @@ import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.dmr.ModelNode;
 import org.jboss.hal.testsuite.Console;
 import org.jboss.hal.testsuite.CrudOperations;
-import org.jboss.hal.testsuite.Random;
 import org.jboss.hal.testsuite.creaper.ManagementClientProvider;
 import org.jboss.hal.testsuite.page.configuration.ElytronOtherSettingsPage;
 import org.junit.AfterClass;
@@ -17,8 +16,6 @@ import org.wildfly.extras.creaper.core.online.operations.Values;
 
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CLEAR_TEXT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.CREDENTIAL_REFERENCE;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.PATH;
-import static org.jboss.hal.dmr.ModelDescriptionConstants.PORT;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.URL;
 import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures.*;
 
@@ -43,12 +40,6 @@ public class AbstractOtherSettingsTest {
         operations.add(dirContextAddress(DIR_CR_UPD), dirCtxParams);
         operations.add(dirContextAddress(DIR_CR_DEL), dirCtxParams);
 
-        // SSL
-
-        // a realm is required for new security-domain
-
-        operations.add(constantPrincipalTransformerAddress(CONS_PRI_TRANS_UPDATE), Values.of(CONSTANT, ANY_STRING));
-
         operations.add(authenticationConfigurationAddress(AUT_CF_UPDATE));
         operations.add(authenticationConfigurationAddress(AUT_CF_DELETE));
 
@@ -65,27 +56,6 @@ public class AbstractOtherSettingsTest {
         matchRuleDelete.get(MATCH_ABSTRACT_TYPE).set(AUT_CT_MR_DELETE);
         operations.add(authenticationContextAddress(AUT_CT_UPDATE2),
                 Values.ofList(MATCH_RULES, matchRuleUpdate, matchRuleDelete));
-
-        operations.add(fileAuditLogAddress(FILE_LOG_DELETE), Values.of(PATH, ANY_STRING));
-        operations.add(fileAuditLogAddress(FILE_LOG_UPDATE), Values.of(PATH, ANY_STRING));
-        operations.add(fileAuditLogAddress(FILE_LOG_TRY_UPDATE), Values.of(PATH, ANY_STRING));
-
-        Values params = Values.of(PATH, ANY_STRING).and(SUFFIX, SUFFIX_LOG);
-        operations.add(periodicRotatingFileAuditLogAddress(PER_LOG_DELETE), params);
-        operations.add(periodicRotatingFileAuditLogAddress(PER_LOG_UPDATE), params);
-        operations.add(periodicRotatingFileAuditLogAddress(PER_LOG_TRY_UPDATE), params);
-
-        operations.add(sizeRotatingFileAuditLogAddress(SIZ_LOG_DELETE), Values.of(PATH, ANY_STRING));
-        operations.add(sizeRotatingFileAuditLogAddress(SIZ_LOG_UPDATE), Values.of(PATH, ANY_STRING));
-
-        Values syslogParams = Values.of(HOSTNAME, ANY_STRING).and(PORT, Random.number()).and(SERVER_ADDRESS, LOCALHOST);
-        operations.add(syslogAuditLogAddress(SYS_LOG_UPDATE), syslogParams);
-        operations.add(syslogAuditLogAddress(SYS_LOG_TRY_UPDATE), syslogParams);
-        operations.add(syslogAuditLogAddress(SYS_LOG_DELETE), syslogParams);
-
-        Values secEventParams = Values.ofList(SECURITY_EVENT_LISTENERS, SYS_LOG_UPDATE, SIZ_LOG_UPDATE);
-        operations.add(aggregateSecurityEventListenerAddress(AGG_SEC_UPDATE), secEventParams);
-        operations.add(aggregateSecurityEventListenerAddress(AGG_SEC_DELETE), secEventParams);
     }
 
     @AfterClass
@@ -116,25 +86,7 @@ public class AbstractOtherSettingsTest {
             operations.removeIfExists(authenticationConfigurationAddress(AUT_CF_CR_CRT));
             operations.removeIfExists(authenticationConfigurationAddress(AUT_CF_CR_UPD));
             operations.removeIfExists(authenticationConfigurationAddress(AUT_CF_CR_DEL));
-            operations.removeIfExists(fileAuditLogAddress(FILE_LOG_DELETE));
-            operations.removeIfExists(fileAuditLogAddress(FILE_LOG_UPDATE));
-            operations.removeIfExists(fileAuditLogAddress(FILE_LOG_TRY_UPDATE));
-            operations.removeIfExists(fileAuditLogAddress(FILE_LOG_CREATE));
             // removeIfExists() the aggregate-security-event-listener first, as they require size audit log and syslog
-            operations.removeIfExists(aggregateSecurityEventListenerAddress(AGG_SEC_UPDATE));
-            operations.removeIfExists(aggregateSecurityEventListenerAddress(AGG_SEC_CREATE));
-            operations.removeIfExists(aggregateSecurityEventListenerAddress(AGG_SEC_DELETE));
-            operations.removeIfExists(periodicRotatingFileAuditLogAddress(PER_LOG_UPDATE));
-            operations.removeIfExists(periodicRotatingFileAuditLogAddress(PER_LOG_TRY_UPDATE));
-            operations.removeIfExists(periodicRotatingFileAuditLogAddress(PER_LOG_DELETE));
-            operations.removeIfExists(periodicRotatingFileAuditLogAddress(PER_LOG_CREATE));
-            operations.removeIfExists(sizeRotatingFileAuditLogAddress(SIZ_LOG_DELETE));
-            operations.removeIfExists(sizeRotatingFileAuditLogAddress(SIZ_LOG_UPDATE));
-            operations.removeIfExists(sizeRotatingFileAuditLogAddress(SIZ_LOG_CREATE));
-            operations.removeIfExists(syslogAuditLogAddress(SYS_LOG_DELETE));
-            operations.removeIfExists(syslogAuditLogAddress(SYS_LOG_CREATE));
-            operations.removeIfExists(syslogAuditLogAddress(SYS_LOG_UPDATE));
-            operations.removeIfExists(syslogAuditLogAddress(SYS_LOG_TRY_UPDATE));
             operations.removeIfExists(policyAddress(POL_CREATE));
         } finally {
             client.close();

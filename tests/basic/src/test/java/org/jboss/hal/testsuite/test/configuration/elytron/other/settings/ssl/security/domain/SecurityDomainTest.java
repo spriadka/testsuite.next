@@ -32,6 +32,7 @@ import static org.jboss.hal.dmr.ModelDescriptionConstants.PATH;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REALM;
 import static org.jboss.hal.dmr.ModelDescriptionConstants.REALMS;
 import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures.ANY_STRING;
+import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures.CONSTANT;
 import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures.CONS_PRI_TRANS_UPDATE;
 import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures.FILESYS_RLM_CREATE;
 import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures.FILESYS_RLM_UPDATE;
@@ -44,6 +45,7 @@ import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures
 import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures.SEC_DOM_UPDATE2;
 import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures.SEC_DOM_UPDATE3;
 import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures.SSL_ITEM;
+import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures.constantPrincipalTransformerAddress;
 import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures.filesystemRealmAddress;
 import static org.jboss.hal.testsuite.test.configuration.elytron.ElytronFixtures.securityDomainAddress;
 
@@ -55,6 +57,7 @@ public class SecurityDomainTest {
 
     @BeforeClass
     public static void setUp() throws IOException {
+        operations.add(constantPrincipalTransformerAddress(CONS_PRI_TRANS_UPDATE), Values.of(CONSTANT, ANY_STRING)).assertSuccess();
         operations.add(filesystemRealmAddress(FILESYS_RLM_CREATE), Values.of(PATH, ANY_STRING)).assertSuccess();
         operations.add(filesystemRealmAddress(FILESYS_RLM_UPDATE), Values.of(PATH, ANY_STRING)).assertSuccess();
         ModelNode realmNode1 = new ModelNode();
@@ -77,6 +80,9 @@ public class SecurityDomainTest {
             operations.removeIfExists(securityDomainAddress(SEC_DOM_UPDATE3));
             operations.removeIfExists(securityDomainAddress(SEC_DOM_DELETE));
             operations.removeIfExists(securityDomainAddress(SEC_DOM_CREATE));
+            operations.removeIfExists(filesystemRealmAddress(FILESYS_RLM_CREATE));
+            operations.removeIfExists(filesystemRealmAddress(FILESYS_RLM_UPDATE));
+            operations.removeIfExists(constantPrincipalTransformerAddress(CONS_PRI_TRANS_UPDATE));
         } finally {
             client.close();
         }

@@ -47,6 +47,7 @@ public class AggregateProvidersTest {
         Values aggValues = Values.ofList(PROVIDERS, PROV_LOAD_UPDATE, PROV_LOAD_UPDATE2);
         operations.add(providerLoaderAddress(PROV_LOAD_UPDATE)).assertSuccess();
         operations.add(providerLoaderAddress(PROV_LOAD_UPDATE2)).assertSuccess();
+        operations.add(providerLoaderAddress(PROV_LOAD_UPDATE3)).assertSuccess();
         operations.add(aggregateProvidersAddress(AGG_PRV_DELETE), aggValues).assertSuccess();
         operations.add(aggregateProvidersAddress(AGG_PRV_UPDATE), aggValues).assertSuccess();
     }
@@ -59,6 +60,7 @@ public class AggregateProvidersTest {
             operations.removeIfExists(aggregateProvidersAddress(AGG_PRV_CREATE));
             operations.removeIfExists(providerLoaderAddress(PROV_LOAD_UPDATE));
             operations.removeIfExists(providerLoaderAddress(PROV_LOAD_UPDATE2));
+            operations.removeIfExists(providerLoaderAddress(PROV_LOAD_UPDATE3));
         } finally {
             client.close();
         }
